@@ -1,0 +1,50 @@
+\documentclass[a4paper]{article}                         %文章类别
+%--------------------------------------------------调用宏包--------------------------------------------------%
+\input{Set/Package_set.tex}
+%--------------------------------------------------定义代码的样式--------------------------------------------------%
+\lstset{
+  language=C++,                   % 代码语言
+  basicstyle=\ttfamily,            % 代码的基本样式，\ttfamily 表示等宽字体
+  keywordstyle=\color{blue},       % 关键词颜色
+  commentstyle=\color{green!50!black}, % 注释颜色
+  stringstyle=\color{red},         % 字符串颜色
+  numbers=left,                    % 在左边显示行号
+  numberstyle=\tiny\color{gray},   % 行号的样式
+  stepnumber=1,                    % 行号的步长
+  tabsize=2,                       % 制表符宽度
+  showspaces=false,                % 不显示空格
+  showstringspaces=false,          % 不显示字符串中的空格
+  breaklines=true,                 % 自动换行
+  breakatwhitespace=false,         % 仅在空格处换行
+  frame=single,                    % 用框架框住代码
+  backgroundcolor=\color{gray!10}  % 背景颜色
+}
+
+          
+\titleformat{\section}                          %section部分格式设置
+{\centering\Large\bfseries}{\thesection}{1em}{}
+
+\setlength{\parindent}{10em}                    %2em代表首行缩进两个字符
+
+
+\title{Proj_{1}}       %文章标题
+
+\date{}                                         %日期
+\author{}
+
+\begin{document}                                %全文开始
+
+\maketitle
+
+%--------------------------------------------------正文----------------------------------------------------%
+\input{解题思路}
+\input{实现难点}
+\input{使用的数据结构}
+\input{还未解决的问题}
+\input{引用网站}
+
+
+\newpage
+%--------------------------------------------------参考文献--------------------------------------------------%
+\bibliographystyle{plain}                       %表示整体的模板风格
+\end{document}                                  %全文结束    

@@ -1,0 +1,124 @@
+\section{使用的数据结构}
+    \subsection{Struct}
+        \subsubsection{$Clause$}
+        那么什么是``Clause''呢?将``Clause''翻译成为中文,也就是``子句''\\
+    同样,我们拿一个简单的例子进行说明:
+
+    \begin{center}
+        $p_{1} \cap p_2 \cap \cdots \cap p_{l} \cap \cdots \cap p_{m}$
+    \end{center}
+
+    \begin{center}
+        $clause_{l} = x_{1} \cup x_{2} \cup \overline{x_{3}}$
+    \end{center}
+
+    \noindent
+    我们可以很清晰地看到:\par
+        (1)$p_{1} \cap p_2 \cap \cdots \cap p_{l} \cap \cdots \cap p_{m}$是一个合取式\par
+        (2)$p_{l}$实际上是合取式$p_{1} \cap p_2 \cap \cdots \cap p_{l} \cap \cdots \cap p_{m}$中的一个命题公式\par
+        (3)$clause_{l}$实际上就是$p_{l}$\\
+    也就是说:
+    \begin{center}
+        布尔表达式当中的``子句''实际上就是合取式当中的``命题公式''    
+    \end{center}
+    \par
+    那么,从另一个角度出发,这个``Clause''里面应该有什么东西呢?我们再次观察一下上面这个例子:
+    \begin{center}
+        $clause_{l} = x_{1} \cup x_{2} \cup \overline{x_{3}}$
+    \end{center}
+
+    \noindent
+    我们可以看到:\par
+        (1)这个``Clause''当中有变量``$x_{i}$''\\
+    同样,很自然地,我们会问这么一个问题:\par
+        (1)这个变量``$x_{i}$''是个什么东西呢?\\
+    我们这里来进行回答:\par
+        (1)这个``Clause''当中的变量``$x_{i}$''叫做``子句''当中的``文字'',也就是``Clause''当中的``literal''\\
+    因此,我们这里的Struct ``$Clause$''就定义的很自然了:
+
+    \begin{lstlisting}
+            struct Clause {
+                int literals[3];
+            };
+    \end{lstlisting}
+
+    \indent
+    在这里解释一下``$literal[3]$''当中的`3',这个`3'是什么意思呢?\\
+    我们这里进行回答:\par
+        (1)在``问题简介''当中我们已经说了,这是一个``3-SAT问题''\\
+    也就是说每个``Clause''当中只有`\textbf{3}'个变量,因此我们这里是``$literal[3]$''(当然对于``K-SAT问题''而言,我们也可以改为``$literal[k]$'',视具体情况来决定这个`k'即可)
+    \subsection{Array}
+        \subsubsection{$AllClauses[MAX\_CLAUSES]$}
+            那么什么是``$AllClauses[MAX\_CLAUSES]$''呢?从命名的角度来看其实非常好理解:\par
+            (1)将所有的``Clause''(注意是一个struct,里面存储了一个int型array)放在一个``Array''当中\ ——\ 这个``Array''就叫做``AllClauses'',换言之,我们定义了一个存放``$Clause$''的``Array'':
+            \begin{center}
+                $AllClauses[MAX\_CLAUSES]$\\  
+            \end{center}
+            \par
+            同样地,在这里解释一下这个``$MAX\_CLAUSES$'':
+
+    \begin{lstlisting}
+            #define MAX_CLAUSES 1200
+    \end{lstlisting}
+    \par
+    主要是因为题目中有提到这么一个东西:``表达式数m $\leq$ 1200'',那也就是说,我这里限定在``Array''存放的``Clause''个数不超过1200个
+
+        \subsubsection{$assignment[MAX\_VARS+1]$}
+        那么什么是``$assignment[MAX\_VARS+1]$''呢?同样,我们从命名的角度出发:\par
+        (1)``$assignment[MAX\_VARS+1]$''表示对``$clause_{l}$''中的``$literal$''进行赋值的赋值方案\par
+        同样,我们拿一个简单的例子(变量个数n=4)进行演示,考虑:
+        \begin{center}
+            $clause_{l} = x_{1} \cup x_{2} \cup \overline{x_{4}}$
+        \end{center}
+        \par
+        那么:
+        \begin{center}
+            $1 \quad 0 \quad -1 \quad 1$
+        \end{center}
+        \par
+        就是一个``assignment'',也就是一个赋值方案\\
+        很自然地,我们会想:\par
+        (1)变量个数n很大\par
+        (2)``clause''个数m很大\\
+        会怎么样呢?其实本质上也是一样的,只不过有可能赋值方案变成了:
+        \begin{center}
+            $1 \quad 0 \quad 1 \quad -1 \cdots \cdots$
+        \end{center}
+        然后我们将这个``赋值方案''存储进了``$assignment[MAX\_VARS+1]$''当中罢了\\
+        在这里我们有两个细节需要进行解释:\par
+        (1)为什么是``$MAX\_VARS$''\par
+        (2)为什么要``$+1$''\\
+        针对``为什么是`$MAX\_VARS$' '':\par
+            同理,因为题目提到了``变量数n $\leq$ 300'',因此我们会有:
+        \begin{lstlisting}
+                #define MAX_VARS 300
+        \end{lstlisting}
+        针对``为什么要`$+1$' '':\par
+        这是一个比较有意思的点(属于是后期的一个小优化,但确实挺折磨人的),为什么这么说呢?
+        这个``$+1$''实际上是为了让``$assignment[index]$''与``$x_{index}$''的两个下标进行对应,
+        我们这里用一个例子来解释一下:
+        \begin{center}
+            $assignment[8]$:对$x_{9}$进行assign
+        \end{center}
+        这么看这个例子,就会有一个比较麻烦的点出现了:
+        \begin{center}
+            我们很难将``$assignment\_$的下标''与``$x\_$的下标''对应起来
+        \end{center}
+        \noindent
+        并且:
+        \begin{center}
+            ``$x\_$的下标''=``$assignment\_$的下标''+1
+        \end{center}
+        因此,我们这里引入了一个``$+1$'',就是为了让``$assignment\_$的下标''与``$x\_$的下标''对应起来:
+        \begin{center}
+            通过将``$assignment\_$的下标''往后移动一格实现``下标对齐''
+        \end{center}
+        \noindent
+        这是我在实现过程中遇到的一个比较巧妙的点
+        \subsubsection{$positive[MAX\_VARS + 1]$与$negative[MAX\_VARS + 1]$} 
+        那么什么是``$positive[MAX\_VARS + 1]$'' 和  ``$negative[MAX\_VARS + 1]$''呢?
+        因为``$MAX\_VARS + 1$''已经说明的很清楚了,
+        我们这里着重说明一下这两个``Array''实现了什么功能\par
+        从两个``Array''声明的位置(``$Pure \ Literal \ Elimination$'')上来看,这两个``Array''实现的功能从本质上来说是一样的,
+        因此我们这里主要对``$positive[MAX\_VARS + 1]$''进行分析
+    
